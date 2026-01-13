@@ -25,6 +25,7 @@ public final class RegexPatterns {
 
     public static final Pattern VARIABLE_NAME =
             Pattern.compile("/^[a-zA-Z][a-zA-Z0-9_]*$|^_[a-zA-Z0-9][a-zA-Z0-9_]*$/gm");
+    public static final Pattern ASSIGNMENT_DELIMITER = Pattern.compile("\\s*=\\s*");
 
     public static final Pattern INTEGER_TYPE = Pattern.compile("^int$");
     public static final Pattern DOUBLE_TYPE = Pattern.compile("^double$");
@@ -38,5 +39,7 @@ public final class RegexPatterns {
     public static final Pattern STRING_LITERAL = Pattern.compile("^\".*\"$");
     public static final Pattern BOOLEAN_LITERAL = Pattern.compile("^(true|false)$");
     public static final Pattern CHAR_LITERAL = Pattern.compile("^'.'$");
+
+
 
 }

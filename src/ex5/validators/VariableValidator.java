@@ -16,6 +16,13 @@ public class VariableValidator {
 
     private static final String INVALID_DECLARATION_MESSAGE = "Invalid variable declaration: ";
     private static final char DELIMITER = ',';
+    private static final int MIN_DECLARATION_PARTS = 1;
+    private static final int MAX_DECLARATION_PARTS = 2;
+    private static final int NAME_INDEX = 0;
+    private static final int VALUE_INDEX = 1;
+    public static final int FINAL_GROUP_INDEX = 1;
+    public static final int TYPE_GROUP_INDEX = 2;
+    public static final int VARIABLES_GROUP_INDEX = 3;
 
     /**
      * Validates a variable declaration.
@@ -30,38 +37,58 @@ public class VariableValidator {
         if (!declarationMatcher.matches()) {
             throw new InvalidVariableDeclarationException(INVALID_DECLARATION_MESSAGE + declaration);
         }
-        boolean isFinal = declarationMatcher.group(1) != null;
-        String type = declarationMatcher.group(2);
-        String allVariables = declarationMatcher.group(3);
-        String[] variableParts = allVariables.split(String.valueOf(DELIMITER));
-        for (String varPart : variableParts) {
+        boolean isFinal = declarationMatcher.group(FINAL_GROUP_INDEX) != null;
+        VariableType type = VariableType.convertFromString(declarationMatcher.group(TYPE_GROUP_INDEX));
+        String allVariables = declarationMatcher.group(VARIABLES_GROUP_INDEX);
+        if (!isValidInitializationValue(allVariables, type, symbolTable)) {
+            throw new InvalidVariableDeclarationException(INVALID_DECLARATION_MESSAGE + declaration);
         }
-
-
     }
 
-    private boolean valueMatchType(String value, String type, SymbolTable symbolTable) {
-        VariableType declaredType = VariableType.convertFromString(type);
-        if (declaredType == null) {
+    private boolean isValidInitializationValue(String allVariables,
+                                               VariableType type, SymbolTable symbolTable) {
+        String[] allVariablesDivided = allVariables.split(String.valueOf(DELIMITER));
+        for (String variable : allVariablesDivided) {
+            String[] varParts = variable.split(String.valueOf(RegexPatterns.ASSIGNMENT_DELIMITER));
+            if (varParts.length > MAX_DECLARATION_PARTS || varParts.length < MIN_DECLARATION_PARTS) {
+                return false;
+            }
+            String variableName = varParts[NAME_INDEX].trim();
+            if (!RegexPatterns.VARIABLE_NAME.matcher(variableName).matches()) {
+                return false;
+            }
+            if (varParts.length == MAX_DECLARATION_PARTS) {
+                String value = varParts[VALUE_INDEX].trim();
+                if (!valueMatchType(value, type, symbolTable)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean valueMatchType(String value, VariableType type, SymbolTable symbolTable) {
+        if (type == null) {
             return false;
         }
         if (RegexPatterns.INTEGER_LITERAL.matcher(value).matches()) {
-            return declaredType.canAccept(VariableType.INT);
+            return type.canAccept(VariableType.INT);
         } else if (RegexPatterns.DOUBLE_LITERAL.matcher(value).matches()) {
-            return declaredType.canAccept(VariableType.DOUBLE);
+            return type.canAccept(VariableType.DOUBLE);
         } else if (RegexPatterns.BOOLEAN_LITERAL.matcher(value).matches()) {
-            return declaredType.canAccept(VariableType.BOOLEAN);
+            return type.canAccept(VariableType.BOOLEAN);
         } else if (RegexPatterns.STRING_LITERAL.matcher(value).matches()) {
-            return declaredType.canAccept(VariableType.STRING);
+            return type.canAccept(VariableType.STRING);
         } else if (RegexPatterns.CHAR_LITERAL.matcher(value).matches()) {
-            return declaredType.canAccept(VariableType.CHAR);
+            return type.canAccept(VariableType.CHAR);
         }
         VariableType rightHandVariableType;
         try{
-            rightHandVariableType = VariableType.valueOf(symbolTable.getLocalVariable(value).getType());
+            rightHandVariableType = symbolTable.getLocalVariable(value).getType();
         } catch (Exception e) {
             return false;
         }
+        return type.canAccept(rightHandVariableType);
     }
 
 

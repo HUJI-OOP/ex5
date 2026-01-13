@@ -3,6 +3,7 @@ package ex5.validators;
 import ex5.model.Method;
 import ex5.model.SymbolTable;
 import ex5.model.Variable;
+import ex5.model.VariableType;
 import ex5.parser.SyntaxException;
 import ex5.patterns.RegexPatterns;
 
@@ -53,7 +54,7 @@ public class MethodValidator {
                             INVALID_DUPLICATES_VARIABLE_NANES_IN_METHOD_MESAGE + name);
                 }
 
-                parameters.add(new Variable(type, name, isFinal));
+                parameters.add(new Variable(VariableType.convertFromString(type), name, isFinal));
             }
         }
 
