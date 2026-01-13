@@ -5,18 +5,18 @@ package ex5.model;
  * @author Eilam Soroka, Maayan Felig
  */
 public class Variable {
-    private final String type;
+    private final VariableType type;
     private String name;
     private boolean isInitialized = false;
     private final boolean isFinal;
 
-    public Variable(String type, String name, boolean isFinal) {
+    public Variable(VariableType type, String name, boolean isFinal) {
         this.type = type;
         this.name = name;
         this.isFinal = isFinal;
     }
 
-    public String getType() {
+    public VariableType getType() {
         return type;
     }
 

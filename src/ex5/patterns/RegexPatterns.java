@@ -19,6 +19,10 @@ public final class RegexPatterns {
                     "^\\s*(final\\s+)?(int|double|boolean|char|String)\\s+([a-zA-Z_]\\w*)\\s*$");
     public static final Pattern METHOD_CALL =
             Pattern.compile("^\\s*([a-zA-Z]\\w*)\\s*\\((.*)\\)\\s*;\\s*$");
+
+    public static final Pattern VARIABLE_DECLARATION =
+            Pattern.compile("^\\s*(final\\s+)?(int|double|boolean|String|char)\\s+(.+);\\s*$");
+
     public static final Pattern VARIABLE_NAME =
             Pattern.compile("/^[a-zA-Z][a-zA-Z0-9_]*$|^_[a-zA-Z0-9][a-zA-Z0-9_]*$/gm");
 

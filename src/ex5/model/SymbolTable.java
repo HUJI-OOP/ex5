@@ -11,9 +11,9 @@ import java.util.HashMap;
 public class SymbolTable {
     private static final String DUPLICATE_VARIABLE_MESSAGE = "Duplicate global variable name: ";
     private static final String DUPLICATE_METHOD_MESSAGE = "Duplicate method name: ";
-    private static final String ASSIGNMENT_TO_NON_EXISTING_VARIABLE_MESSAGE = "Cannot assign to " +
-            "non-existing variable: ";
+    private static final String NON_EXISTING_VARIABLE_MESSAGE = "Variable not found: ";
     private static final String METHOD_NOT_FOUND_MESSAGE = "Method not found: ";
+    private static final String[] VARIABLE_TYPES = {"int", "double", "boolean", "char", "String"};
     private final HashMap<String, Method> methodTable;
     private final HashMap<String, Variable> variableTable;
     private final BlockHandler blockHandler;
@@ -80,6 +80,7 @@ public class SymbolTable {
             }
             currentScope = currentScope.getParentScope();
         }
-        throw new AssignmentToNonExistingVariableException(ASSIGNMENT_TO_NON_EXISTING_VARIABLE_MESSAGE+name);
+        throw new AssignmentToNonExistingVariableException(NON_EXISTING_VARIABLE_MESSAGE+name);
     }
+
 }
