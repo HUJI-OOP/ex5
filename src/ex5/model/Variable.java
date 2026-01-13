@@ -31,6 +31,4 @@ public class Variable {
     public void assignVal(){
         this.isInitialized = true;
     }
-
-
 }
