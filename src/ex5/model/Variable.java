@@ -1,5 +1,9 @@
 package ex5.model;
 
+/**
+ * This class represents a variable with its type, name, initialization status, and finality.
+ * @author Eilam Soroka, Maayan Felig
+ */
 public class Variable {
     private final String type;
     private String name;
