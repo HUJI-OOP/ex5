@@ -92,12 +92,14 @@ public class VariableValidator {
         }
         VariableType rightHandVariableType;
         try{
-            rightHandVariableType = symbolTable.getLocalVariable(value).getType();
+            rightHandVariableType = symbolTable.getVariable(value).getType();
         } catch (Exception e) {
             return false;
         }
         return type.canAccept(rightHandVariableType);
     }
+
+
 
 
 

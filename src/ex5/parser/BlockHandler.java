@@ -18,6 +18,9 @@ public class BlockHandler {
     }
 
     public Scope getCurrentScope() {
+        if(scopeStack.isEmpty()){
+            return null;
+        }
         return scopeStack.peek();
     }
 

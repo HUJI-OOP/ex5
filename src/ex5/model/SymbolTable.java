@@ -13,9 +13,8 @@ public class SymbolTable {
     private static final String DUPLICATE_METHOD_MESSAGE = "Duplicate method name: ";
     private static final String NON_EXISTING_VARIABLE_MESSAGE = "Variable not found: ";
     private static final String METHOD_NOT_FOUND_MESSAGE = "Method not found: ";
-    private static final String[] VARIABLE_TYPES = {"int", "double", "boolean", "char", "String"};
     private final HashMap<String, Method> methodTable;
-    private final HashMap<String, Variable> variableTable;
+    private final HashMap<String, Variable> globalVariableTable;
     private final BlockHandler blockHandler;
 
     /**
@@ -24,7 +23,7 @@ public class SymbolTable {
      */
     public SymbolTable(BlockHandler blockHandler) {
         methodTable = new HashMap<>();
-        variableTable = new HashMap<>();
+        globalVariableTable = new HashMap<>();
         this.blockHandler = blockHandler;
     }
 
@@ -46,6 +45,11 @@ public class SymbolTable {
         return methodTable.get(methodName);
     }
 
+    /**
+        Check if whether variable is global or local and add to the appropriate table.
+        @param variable to add
+        @throws IllegalDuplicateException if variable already exists in the appropriate scope
+     */
     public void addVariable(Variable variable) throws IllegalDuplicateException {
         if(this.blockHandler.isGlobalScope()){
             addGlobalVariable(variable);
@@ -55,24 +59,14 @@ public class SymbolTable {
         }
     }
 
-    /**
-        Check if variable exists in the table. If not, add variable to the table.
-        @param variable to add
-        @throws IllegalDuplicateException if variable already exists
-     */
-    public void addGlobalVariable(Variable variable) throws IllegalDuplicateException {
-        if (variableTable.containsKey(variable.getName())) {
+    private void addGlobalVariable(Variable variable) throws IllegalDuplicateException {
+        if (globalVariableTable.containsKey(variable.getName())) {
             throw new IllegalDuplicateException(DUPLICATE_VARIABLE_MESSAGE + variable.getName());
         }
-        variableTable.put(variable.getName(), variable);
+        globalVariableTable.put(variable.getName(), variable);
     }
 
-    /**
-        Add local variable to the current scope.
-        @param variable to add
-        @throws IllegalDuplicateException if variable already exists in the current scope
-     */
-    public void addLocalVariable(Variable variable) throws IllegalDuplicateException {
+    private void addLocalVariable(Variable variable) throws IllegalDuplicateException {
         this.blockHandler.getCurrentScope().addLocalVariable(variable);
     }
 
@@ -81,13 +75,16 @@ public class SymbolTable {
         @param name of the variable to find
         @throws AssignmentToNonExistingVariableException if variable does not exist
      */
-    public Variable getLocalVariable(String name) throws AssignmentToNonExistingVariableException{
+    public Variable getVariable(String name) throws AssignmentToNonExistingVariableException{
         Scope currentScope = blockHandler.getCurrentScope();
         while (currentScope != null) {
             if (currentScope.containsVariable(name)) {
                 return currentScope.getVariable(name);
             }
             currentScope = currentScope.getParentScope();
+        }
+        if (globalVariableTable.containsKey(name)) {
+            return globalVariableTable.get(name);
         }
         throw new AssignmentToNonExistingVariableException(NON_EXISTING_VARIABLE_MESSAGE+name);
     }
