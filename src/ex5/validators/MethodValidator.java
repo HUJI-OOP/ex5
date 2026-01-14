@@ -42,7 +42,14 @@ public class MethodValidator {
         Set<String> names = new HashSet<>();
 
         if (!paramsGroup.isEmpty()) {
-            for (String param : paramsGroup.split(COMMA_SEPARATOR)) {
+            String[] rawParams = paramsGroup.split(COMMA_SEPARATOR, -1);
+
+            for (String param : rawParams) {
+                if (param.trim().isEmpty()) {
+                    throw new InvalidParameterFormatException(
+                            INVALID_PARAMETER_MESAGE + paramsGroup);
+                }
+
                 Matcher pm = RegexPatterns.PARAMETER_PATTERN.matcher(param);
                 if (!pm.matches()) {
                     throw new InvalidParameterFormatException(INVALID_PARAMETER_MESAGE + param);
@@ -65,7 +72,6 @@ public class MethodValidator {
     }
 
     public static void validateMethodExists(String line, SymbolTable symbolTable) throws SyntaxException {
-        VariableValidator validator = new VariableValidator();
         Matcher matcher = RegexPatterns.METHOD_CALL.matcher(line);
         if (!matcher.matches()) {
             throw new InvalidMethodCallFormatException(INVALID_METHOD_CALL_FORMAT_MESSAGE);
@@ -78,7 +84,12 @@ public class MethodValidator {
 
         List<String> args = new ArrayList<>();
         if (!argsGroup.isEmpty()) {
-            for (String arg : argsGroup.split(COMMA_SEPARATOR)) {
+            String[] rawArgs = argsGroup.split(COMMA_SEPARATOR, -1);
+            for (String arg : rawArgs) {
+                if (arg.trim().isEmpty()) {
+                    throw new InvalidMethodCallFormatException(
+                            INVALID_METHOD_CALL_FORMAT_MESSAGE);
+                }
                 args.add(arg.trim());
             }
         }
@@ -92,7 +103,7 @@ public class MethodValidator {
             String arg = args.get(i);
             Variable param = method.getParameters().get(i);
             // Additional type checking can be implemented here if needed
-            if (!validator.valueMatchType(arg, param.getType(), symbolTable)) {
+            if (!VariableValidator.valueMatchType(arg, param.getType(), symbolTable)) {
                 throw new InvalidArgumentTypeMismatchMethodException(
                         ARRGUMENT_TYPE_MISMATCH_TO_DECLERATION_MEESAGE + param.getName());
             }

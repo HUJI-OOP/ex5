@@ -35,7 +35,7 @@ public class VariableValidator {
      * @param symbolTable The symbol table for context.
      * @throws SyntaxException If the declaration is invalid.
      */
-    public void validateVariableDeclaration(String declaration, SymbolTable symbolTable)
+    public static void validateVariableDeclaration(String declaration, SymbolTable symbolTable)
                                                                 throws SyntaxException {
         Pattern declarationPattern = Pattern.compile(String.valueOf(RegexPatterns.VARIABLE_DECLARATION));
         Matcher declarationMatcher = declarationPattern.matcher(declaration);
@@ -50,7 +50,7 @@ public class VariableValidator {
         }
     }
 
-    private boolean isValidInitializationValue(String allVariables, VariableType type,
+    private static boolean isValidInitializationValue(String allVariables, VariableType type,
                                                SymbolTable symbolTable, boolean isFinal)
                                                                         throws IllegalDuplicateException {
         String[] allVariablesDivided = allVariables.split(String.valueOf(DELIMITER));
@@ -78,20 +78,20 @@ public class VariableValidator {
         return true;
     }
 
-    public void validateVariableAssignment(String variableName, String value,
-                                           SymbolTable symbolTable) throws SyntaxException {
-        Variable variable;
-        variable = symbolTable.getVariable(variableName);
-        if (variable.isFinal()) {
-            throw new InvalidVariableAssignmentException(ASSIGNING_TO_FINAL_ERROR_MESSAGE + variableName);
-        }
-        if (!valueMatchType(value, variable.getType(), symbolTable)) {
-            throw new InvalidVariableAssignmentException
-                    (ASSIGNING_WRONG_VALUE_TYPE_ERROR_MESSAGE + variableName);
-        }
-    }
+    public static void validateVariableAssignment(String assignmentLine, SymbolTable symbolTable)
+                                                                                    throws SyntaxException {
+//        Variable variable;
+//        variable = symbolTable.getVariable(variableName);
+//        if (variable.isFinal()) {
+//            throw new InvalidVariableAssignmentException(ASSIGNING_TO_FINAL_ERROR_MESSAGE + variableName);
+//        }
+//        if (!valueMatchType(value, variable.getType(), symbolTable)) {
+//            throw new InvalidVariableAssignmentException
+//                    (ASSIGNING_WRONG_VALUE_TYPE_ERROR_MESSAGE + variableName);
+//        }
+    }//todo complete method with proper parsing
 
-    protected boolean valueMatchType(String value, VariableType type, SymbolTable symbolTable) {
+    protected static boolean valueMatchType(String value, VariableType type, SymbolTable symbolTable) {
         if (type == null) {
             return false;
         }

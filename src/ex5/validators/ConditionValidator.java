@@ -12,7 +12,7 @@ public class ConditionValidator {
     private static final String CONDITION_DELIMITER_REGEX = "\\s*(\\|\\s*\\||&\\s*&)\\s*";
     private static final int CONDITION_STATEMENT_GROUP_INDEX = 2;
 
-    public void validateConditionLine(String declaration, SymbolTable symbolTable) throws SyntaxException {
+    public static void validateConditionLine(String declaration, SymbolTable symbolTable) throws SyntaxException {
         //check full structure "if ( ... ) {" or "while ( ... ) {"
         Pattern fullConditionLinePattern = Pattern.compile(
                 String.valueOf(RegexPatterns.FULL_CONDITION_LINE_STRUCTURE));
@@ -35,7 +35,7 @@ public class ConditionValidator {
         }
     }
 
-    private boolean isValidConditionPart(String conditionPart, SymbolTable symbolTable)
+    private static boolean isValidConditionPart(String conditionPart, SymbolTable symbolTable)
                                                                                     throws SyntaxException {
         Pattern booleanValuePattern = Pattern.compile(String.valueOf(RegexPatterns.BOOLEAN_VALUE_PATTERN));
         Matcher booleanMatcher = booleanValuePattern.matcher(conditionPart);

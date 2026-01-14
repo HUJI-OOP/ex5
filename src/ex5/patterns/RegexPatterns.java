@@ -42,6 +42,33 @@ public final class RegexPatterns {
     public static final Pattern BOOLEAN_VALUE_PATTERN =
             Pattern.compile("^\\s*(true|false)\\s*$");
 
+    //File patterns
+    public static final Pattern LINE_TO_IGNORE = Pattern.compile("^\\s*(//.*|\\s*)?$");
+
+
+    // line handlers patterns
+    public static final Pattern SCOPE_CLOSE =
+            Pattern.compile("^\\s*}\\s*$");
+    public static final Pattern METHOD_RECOGNIZER =
+            Pattern.compile("^\\s*void.*$");
+
+    public static final Pattern RETURN =
+            Pattern.compile("^\\s*return\\s*;\\s*$");
+    public static final Pattern IF_WHILE =
+            Pattern.compile("^\\s*(if|while).*$");
+    public static final Pattern ASSIGNMENT =
+            Pattern.compile("^.*=.*$");
+    public static final Pattern END_WITH_SEMI_COLLOM =
+            Pattern.compile("^.*;\\s*$");
+    public static final Pattern METHOD_CALL_RECOGNIZER =
+            Pattern.compile("^.*\\(.*\\).*$");
+    public static final Pattern VARIABLE_DECLARATION_RECOGNIZER =
+            Pattern.compile("^\\s*(final\\s+)?(int|double|boolean|String|char)\\s+.*$");
+
+
 
 
 }
+
+
+
