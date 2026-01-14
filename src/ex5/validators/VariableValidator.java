@@ -28,10 +28,10 @@ public class VariableValidator {
      * Validates a variable declaration.
      * @param declaration The variable declaration to validate.
      * @param symbolTable The symbol table for context.
-     * @throws SyntaxException If the declaration is invalid.
+     * @throws InvalidVariableDeclarationException If the declaration is invalid.
      */
     public void validateVariableDeclaration(String declaration, SymbolTable symbolTable)
-                                                                                throws SyntaxException {
+                                                                throws InvalidVariableDeclarationException {
         Pattern declarationPattern = Pattern.compile(String.valueOf(RegexPatterns.VARIABLE_DECLARATION));
         Matcher declarationMatcher = declarationPattern.matcher(declaration);
         if (!declarationMatcher.matches()) {
