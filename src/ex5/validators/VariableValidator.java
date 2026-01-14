@@ -91,7 +91,7 @@ public class VariableValidator {
         }
     }
 
-    private boolean valueMatchType(String value, VariableType type, SymbolTable symbolTable) {
+    protected boolean valueMatchType(String value, VariableType type, SymbolTable symbolTable) {
         if (type == null) {
             return false;
         }
