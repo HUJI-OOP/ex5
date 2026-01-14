@@ -20,4 +20,8 @@ public class BlockHandler {
     public Scope getCurrentScope() {
         return scopeStack.peek();
     }
+
+    public boolean isGlobalScope() {
+        return scopeStack.isEmpty();
+    }
 }

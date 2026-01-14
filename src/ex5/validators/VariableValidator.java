@@ -1,6 +1,8 @@
 package ex5.validators;
 
+import ex5.model.IllegalDuplicateException;
 import ex5.model.SymbolTable;
+import ex5.model.Variable;
 import ex5.model.VariableType;
 import ex5.parser.SyntaxException;
 import ex5.patterns.RegexPatterns;
@@ -28,10 +30,10 @@ public class VariableValidator {
      * Validates a variable declaration.
      * @param declaration The variable declaration to validate.
      * @param symbolTable The symbol table for context.
-     * @throws InvalidVariableDeclarationException If the declaration is invalid.
+     * @throws SyntaxException If the declaration is invalid.
      */
     public void validateVariableDeclaration(String declaration, SymbolTable symbolTable)
-                                                                throws InvalidVariableDeclarationException {
+                                                                throws SyntaxException {
         Pattern declarationPattern = Pattern.compile(String.valueOf(RegexPatterns.VARIABLE_DECLARATION));
         Matcher declarationMatcher = declarationPattern.matcher(declaration);
         if (!declarationMatcher.matches()) {
@@ -40,13 +42,14 @@ public class VariableValidator {
         boolean isFinal = declarationMatcher.group(FINAL_GROUP_INDEX) != null;
         VariableType type = VariableType.convertFromString(declarationMatcher.group(TYPE_GROUP_INDEX));
         String allVariables = declarationMatcher.group(VARIABLES_GROUP_INDEX);
-        if (!isValidInitializationValue(allVariables, type, symbolTable)) {
+        if (!isValidInitializationValue(allVariables, type, symbolTable, isFinal)) {
             throw new InvalidVariableDeclarationException(INVALID_DECLARATION_MESSAGE + declaration);
         }
     }
 
-    private boolean isValidInitializationValue(String allVariables,
-                                               VariableType type, SymbolTable symbolTable) {
+    private boolean isValidInitializationValue(String allVariables, VariableType type,
+                                               SymbolTable symbolTable, boolean isFinal)
+                                                                        throws IllegalDuplicateException {
         String[] allVariablesDivided = allVariables.split(String.valueOf(DELIMITER));
         for (String variable : allVariablesDivided) {
             String[] varParts = variable.split(String.valueOf(RegexPatterns.ASSIGNMENT_DELIMITER));
@@ -63,6 +66,11 @@ public class VariableValidator {
                     return false;
                 }
             }
+            if(isFinal && varParts.length == MIN_DECLARATION_PARTS){
+                return false;
+            }
+            Variable newVariable = new Variable(type, variableName, isFinal);
+            symbolTable.addVariable(newVariable);
         }
         return true;
     }

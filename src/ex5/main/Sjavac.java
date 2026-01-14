@@ -25,7 +25,10 @@ public class Sjavac {
                mixedDeclarationsTest() &&
                illegalVariableNameTest() &&
                invalidInitializationValueTest() &&
-               invalidDeclarationFormatTest();
+               invalidDeclarationFormatTest() &&
+               nonInitializedFinalVariableTest() &&
+               initializedFinalVariableTest() &&
+               duplicateVariableTest();
     }
 
     public static boolean singleInitializatinTest(){
@@ -140,6 +143,53 @@ public class Sjavac {
         SymbolTable symbolTable = new SymbolTable(blockHandler);
         try{
             variableValidator.validateVariableDeclaration(example, symbolTable);
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean nonInitializedFinalVariableTest(){
+        String example = "final int x;";
+        VariableValidator variableValidator = new VariableValidator();
+        BlockHandler blockHandler = new BlockHandler();
+        SymbolTable symbolTable = new SymbolTable(blockHandler);
+        try{
+            variableValidator.validateVariableDeclaration(example, symbolTable);
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean initializedFinalVariableTest(){
+        String example = "final int x = 10;";
+        VariableValidator variableValidator = new VariableValidator();
+        BlockHandler blockHandler = new BlockHandler();
+        SymbolTable symbolTable = new SymbolTable(blockHandler);
+        try{
+            variableValidator.validateVariableDeclaration(example, symbolTable);
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean duplicateVariableTest(){
+        String example1 = "int a = 5;";
+        String example2 = "int a = 10;";
+        VariableValidator variableValidator = new VariableValidator();
+        BlockHandler blockHandler = new BlockHandler();
+        SymbolTable symbolTable = new SymbolTable(blockHandler);
+        try{
+            variableValidator.validateVariableDeclaration(example1, symbolTable);
+            variableValidator.validateVariableDeclaration(example2, symbolTable);
         }
         catch (Exception e){
             System.err.println(e.getMessage());

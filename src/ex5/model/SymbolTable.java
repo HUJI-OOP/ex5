@@ -46,6 +46,15 @@ public class SymbolTable {
         return methodTable.get(methodName);
     }
 
+    public void addVariable(Variable variable) throws IllegalDuplicateException {
+        if(this.blockHandler.isGlobalScope()){
+            addGlobalVariable(variable);
+        }
+        else{
+            addLocalVariable(variable);
+        }
+    }
+
     /**
         Check if variable exists in the table. If not, add variable to the table.
         @param variable to add
