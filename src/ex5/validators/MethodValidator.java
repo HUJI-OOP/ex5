@@ -13,7 +13,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
-
+/**
+ * MethodValidator class
+ * validate method declaration and method calls
+ * @author Eilam Soroka, Maayan Felig
+ */
 public class MethodValidator {
     private static final String INVALID_METOHD_DECLARATION_MESSAGE = "Invalid method declaration";
     private static final String INVALID_DOUBLE_METHOD_NAME_MESSAGE = "Method already defined: ";
@@ -29,7 +33,12 @@ public class MethodValidator {
     private static final String ARRGUMENT_TYPE_MISMATCH_TO_DECLERATION_MEESAGE =
             "Argument type mismatch for parameter: ";
 
-
+    /**
+     * validate method declaration line and register it in the symbol table
+     * @param line the line to validate
+     * @param symbolTable the symbol table
+     * @throws SyntaxException if the line is invalid
+     */
     public static void validateAndRegister(String line, SymbolTable symbolTable) throws SyntaxException {
         Matcher matcher = RegexPatterns.METHOD_DECLARATION.matcher(line);
         if (!matcher.matches()) {
@@ -71,6 +80,12 @@ public class MethodValidator {
         symbolTable.addMethod(new Method(methodName, parameters));
     }
 
+    /**
+     * validate method call line
+     * @param line the line to validate
+     * @param symbolTable the symbol table
+     * @throws SyntaxException if the line is invalid
+     */
     public static void validateMethodExists(String line, SymbolTable symbolTable) throws SyntaxException {
         Matcher matcher = RegexPatterns.METHOD_CALL.matcher(line);
         if (!matcher.matches()) {

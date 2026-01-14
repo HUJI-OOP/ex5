@@ -6,12 +6,20 @@ import ex5.patterns.RegexPatterns;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+/** * A utility class for validating condition lines in code (e.g., if and while statements).
+ * @author Eilam Soroka, Maayan Felig
+ */
 public class ConditionValidator {
 
     private static final String CONDITION_DELIMITER_REGEX = "\\s*(\\|\\s*\\||&\\s*&)\\s*";
     private static final int CONDITION_STATEMENT_GROUP_INDEX = 2;
 
+    /**
+     * Validates a condition line (if or while statement).
+     * @param declaration The condition line to validate.
+     * @param symbolTable The symbol table for context.
+     * @throws SyntaxException If the condition line is invalid.
+     */
     public static void validateConditionLine(String declaration, SymbolTable symbolTable) throws SyntaxException {
         //check full structure "if ( ... ) {" or "while ( ... ) {"
         Pattern fullConditionLinePattern = Pattern.compile(

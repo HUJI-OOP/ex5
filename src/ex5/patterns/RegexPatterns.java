@@ -12,6 +12,7 @@ public final class RegexPatterns {
      */
     private RegexPatterns() {}
 
+    // Method patterns
     public static final Pattern METHOD_DECLARATION = Pattern.compile
             ( "^\\s*void\\s+([a-zA-Z]\\w*)\\s*\\(([^)]*)\\)\\s*\\{\\s*$");
     public static final Pattern PARAMETER_PATTERN = Pattern.compile(
@@ -23,7 +24,8 @@ public final class RegexPatterns {
     // Variable patterns
     public static final Pattern VARIABLE_DECLARATION =
             Pattern.compile("^\\s*(final\\s+)?(int|double|boolean|String|char)\\s+(.+);\\s*$");
-
+    public static final Pattern VARIABLE_ASSIGNMENT =
+            Pattern.compile("^\\s*(\\w+)\\s*=\\s*([^;]+);\\s*$");
     public static final Pattern VARIABLE_NAME =
             Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*$|^_[a-zA-Z0-9][a-zA-Z0-9_]*$");
     public static final Pattern ASSIGNMENT_DELIMITER = Pattern.compile("\\s*=\\s*");
@@ -64,10 +66,6 @@ public final class RegexPatterns {
             Pattern.compile("^.*\\(.*\\).*$");
     public static final Pattern VARIABLE_DECLARATION_RECOGNIZER =
             Pattern.compile("^\\s*(final\\s+)?(int|double|boolean|String|char)\\s+.*$");
-
-
-
-
 }
 
 

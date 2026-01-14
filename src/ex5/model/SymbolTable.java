@@ -38,6 +38,11 @@ public class SymbolTable {
         }
         methodTable.put(method.getName(), method);
     }
+    /**
+        Get method by name.
+        @param methodName name of the method to get
+        @throws IllegalCallingToUnexistingMethodException if method does not exist
+     */
     public Method getMethod(String methodName) throws IllegalCallingToUnexistingMethodException {
         if (!methodTable.containsKey(methodName)) {
             throw new IllegalCallingToUnexistingMethodException(METHOD_NOT_FOUND_MESSAGE + methodName);

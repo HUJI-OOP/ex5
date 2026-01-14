@@ -13,6 +13,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Handles reading and parsing a file line by line.
+ * @author Eilam Soroka, Maayan Felig
+ */
 public class FileHandler {
 
     private static final String IO_ERROR_MESSAGE = "IO error while reading file: ";
@@ -29,7 +33,13 @@ public class FileHandler {
     private static final String LINE_NOT_CLASSIFIABLE_MESSAGE = "Line does not match any valid line pattern";
     private static final String SCOPE_NOT_CLOSED_MESSAGE = "Reached end of file without closing all scopes";
 
-    public static void parseFile(File file) throws SJavacIOException, SyntaxException {
+    /**
+     * Parses a file line by line, updating the symbol table and block handler accordingly.
+     * @param file the path to the file to parse
+     * @throws SJavacIOException if an IO error occurs while reading the file
+     * @throws SyntaxException if a syntax error is encountered during parsing
+     */
+    public static void parseFile(String file) throws SJavacIOException, SyntaxException {
         BlockHandler blockHandler = new BlockHandler();
         SymbolTable symbolTable = new SymbolTable(blockHandler);
         int lineNumber = 0;
@@ -125,6 +135,4 @@ public class FileHandler {
         }
         blockHandler.exitScope();
     }
-
-
 }

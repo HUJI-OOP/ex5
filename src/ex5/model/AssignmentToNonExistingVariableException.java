@@ -8,6 +8,10 @@ import ex5.parser.SyntaxException;
  * @author Eilam Soroka, Maayan Felig
  */
 public class AssignmentToNonExistingVariableException extends SyntaxException {
+    /**
+     * Constructs a new AssignmentToNonExistingVariableException with the specified detail message.
+     * @param message the detail message
+     */
     public AssignmentToNonExistingVariableException(String message) {
         super(message);
     }

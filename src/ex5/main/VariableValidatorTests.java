@@ -188,7 +188,7 @@ public class VariableValidatorTests {
         SymbolTable symbolTable = new SymbolTable(blockHandler);
         try{
             VariableValidator.validateVariableDeclaration(declaration, symbolTable);
-            VariableValidator.validateVariableAssignment("x", "20", symbolTable);
+            VariableValidator.validateVariableAssignment(assignment, symbolTable);
         }
         catch (Exception e){
             System.err.println(e.getMessage());
@@ -204,7 +204,7 @@ public class VariableValidatorTests {
         SymbolTable symbolTable = new SymbolTable(blockHandler);
         try{
             VariableValidator.validateVariableDeclaration(declaration, symbolTable);
-            VariableValidator.validateVariableAssignment("y", "25", symbolTable);
+            VariableValidator.validateVariableAssignment(assignment, symbolTable);
         }
         catch (Exception e){
             System.err.println(e.getMessage());
@@ -223,7 +223,7 @@ public class VariableValidatorTests {
         try{
             variableValidator.validateVariableDeclaration(declaration1, symbolTable);
             variableValidator.validateVariableDeclaration(declaration2, symbolTable);
-            variableValidator.validateVariableAssignment("b", "a", symbolTable);
+            variableValidator.validateVariableAssignment(assignment, symbolTable);
         }
         catch (Exception e){
             System.err.println(e.getMessage());
@@ -240,7 +240,7 @@ public class VariableValidatorTests {
         SymbolTable symbolTable = new SymbolTable(blockHandler);
         try{
             variableValidator.validateVariableDeclaration(declaration, symbolTable);
-            variableValidator.validateVariableAssignment("b", "a", symbolTable);
+            variableValidator.validateVariableAssignment(assignment, symbolTable);
         }
         catch (Exception e){
             System.err.println(e.getMessage());
@@ -259,7 +259,7 @@ public class VariableValidatorTests {
         try {
             variableValidator.validateVariableDeclaration(declaration1, symbolTable);
             variableValidator.validateVariableDeclaration(declaration2, symbolTable);
-            variableValidator.validateVariableAssignment("b", "a", symbolTable);
+            variableValidator.validateVariableAssignment(assignment, symbolTable);
         }
         catch (Exception e){
             System.err.println(e.getMessage());
@@ -276,7 +276,7 @@ public class VariableValidatorTests {
         SymbolTable symbolTable = new SymbolTable(blockHandler);
         try{
             variableValidator.validateVariableDeclaration(declaration, symbolTable);
-            variableValidator.validateVariableAssignment("a", "true", symbolTable);
+            variableValidator.validateVariableAssignment(assignment, symbolTable);
         }
         catch (Exception e){
             System.err.println(e.getMessage());

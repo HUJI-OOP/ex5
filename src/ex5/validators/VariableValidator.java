@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 /**
  * Validator for variable declarations and assignments.
- * @author Eilaem Soroka, Maayan Felig
+ * @author Eilam Soroka, Maayan Felig
  */
 public class VariableValidator {
 
@@ -28,6 +28,9 @@ public class VariableValidator {
     private static final String ASSIGNING_TO_FINAL_ERROR_MESSAGE = "Cannot assign value to final variable: ";
     private static final String ASSIGNING_WRONG_VALUE_TYPE_ERROR_MESSAGE =
             "Type mismatch in assignment to variable: ";
+    private static final String INVALID_ASSIGNMENT_MESSAGE = "Invalid variable assignment";
+    private static final int VARIABLE_NAME_IN_ASSIGNMENT_INDEX = 1;
+    private static final int VALUE_TO_ASSIGN_INDEX = 2;
 
     /**
      * Validates a variable declaration.
@@ -47,7 +50,7 @@ public class VariableValidator {
         String allVariables = declarationMatcher.group(VARIABLES_GROUP_INDEX);
         if (!isValidInitializationValue(allVariables, type, symbolTable, isFinal)) {
             throw new InvalidVariableDeclarationException(INVALID_DECLARATION_MESSAGE + declaration);
-        }
+        }//todo check if right hand variable is initialized in all relevant places
     }
 
     private static boolean isValidInitializationValue(String allVariables, VariableType type,
@@ -78,19 +81,39 @@ public class VariableValidator {
         return true;
     }
 
+    /**
+     * Validates a variable assignment.
+     * @param assignmentLine The variable assignment line to validate.
+     * @param symbolTable The symbol table for context.
+     * @throws SyntaxException If the assignment is invalid.
+     */
     public static void validateVariableAssignment(String assignmentLine, SymbolTable symbolTable)
                                                                                     throws SyntaxException {
-//        Variable variable;
-//        variable = symbolTable.getVariable(variableName);
-//        if (variable.isFinal()) {
-//            throw new InvalidVariableAssignmentException(ASSIGNING_TO_FINAL_ERROR_MESSAGE + variableName);
-//        }
-//        if (!valueMatchType(value, variable.getType(), symbolTable)) {
-//            throw new InvalidVariableAssignmentException
-//                    (ASSIGNING_WRONG_VALUE_TYPE_ERROR_MESSAGE + variableName);
-//        }
-    }//todo complete method with proper parsing
+        Pattern assignmentStructurePattern = Pattern.compile
+                (String.valueOf(RegexPatterns.VARIABLE_ASSIGNMENT));
+        Matcher assignmentMatcher = assignmentStructurePattern.matcher(assignmentLine);
+        if (!assignmentMatcher.matches()) {
+            throw new InvalidVariableAssignmentException(INVALID_ASSIGNMENT_MESSAGE);
+        }
+        String variableName = assignmentMatcher.group(VARIABLE_NAME_IN_ASSIGNMENT_INDEX).trim();
+        String value = assignmentMatcher.group(VALUE_TO_ASSIGN_INDEX).trim();
+        Variable variable = symbolTable.getVariable(variableName);
+        if (variable.isFinal()) {
+            throw new InvalidVariableAssignmentException(ASSIGNING_TO_FINAL_ERROR_MESSAGE + variableName);
+        }
+        if (!valueMatchType(value, variable.getType(), symbolTable)) {
+            throw new InvalidVariableAssignmentException
+                    (ASSIGNING_WRONG_VALUE_TYPE_ERROR_MESSAGE + variableName);
+        }
+    }
 
+    /**
+     * Checks if a value matches the expected variable type.
+     * @param value The value to check.
+     * @param type The expected variable type.
+     * @param symbolTable The symbol table for context.
+     * @return true if the value matches the type, false otherwise.
+     */
     protected static boolean valueMatchType(String value, VariableType type, SymbolTable symbolTable) {
         if (type == null) {
             return false;
@@ -114,6 +137,4 @@ public class VariableValidator {
         }
         return type.canAccept(rightHandVariableType);
     }
-
-
 }
