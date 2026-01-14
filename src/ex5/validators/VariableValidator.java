@@ -25,6 +25,9 @@ public class VariableValidator {
     public static final int FINAL_GROUP_INDEX = 1;
     public static final int TYPE_GROUP_INDEX = 2;
     public static final int VARIABLES_GROUP_INDEX = 3;
+    private static final String ASSIGNING_TO_FINAL_ERROR_MESSAGE = "Cannot assign value to final variable: ";
+    private static final String ASSIGNING_WRONG_VALUE_TYPE_ERROR_MESSAGE =
+            "Type mismatch in assignment to variable: ";
 
     /**
      * Validates a variable declaration.
@@ -75,6 +78,19 @@ public class VariableValidator {
         return true;
     }
 
+    public void validateVariableAssignment(String variableName, String value,
+                                           SymbolTable symbolTable) throws SyntaxException {
+        Variable variable;
+        variable = symbolTable.getVariable(variableName);
+        if (variable.isFinal()) {
+            throw new InvalidVariableAssignmentException(ASSIGNING_TO_FINAL_ERROR_MESSAGE + variableName);
+        }
+        if (!valueMatchType(value, variable.getType(), symbolTable)) {
+            throw new InvalidVariableAssignmentException
+                    (ASSIGNING_WRONG_VALUE_TYPE_ERROR_MESSAGE + variableName);
+        }
+    }
+
     private boolean valueMatchType(String value, VariableType type, SymbolTable symbolTable) {
         if (type == null) {
             return false;
@@ -98,9 +114,6 @@ public class VariableValidator {
         }
         return type.canAccept(rightHandVariableType);
     }
-
-
-
 
 
 }

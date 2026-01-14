@@ -16,7 +16,13 @@ public class VariableValidatorTests {
                 invalidDeclarationFormatTest() &&
                 nonInitializedFinalVariableTest() &&
                 initializedFinalVariableTest() &&
-                duplicateVariableTest();
+                duplicateVariableTest() &&
+                assignmentToFinalVariableTest() &&
+                assignmentToNonFinalVariableTest() &&
+                assignmentFromExistingVariableTest() &&
+                assignmentFromNonExistingVariableTest() &&
+                assignmentFromFinalVariableTest() &&
+                assignmentTypeMismatchTest();
     }
 
     public static boolean singleInitializatinTest(){
@@ -178,6 +184,112 @@ public class VariableValidatorTests {
         try{
             variableValidator.validateVariableDeclaration(example1, symbolTable);
             variableValidator.validateVariableDeclaration(example2, symbolTable);
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean assignmentToFinalVariableTest(){
+        String declaration = "final int x = 10;";
+        String assignment = "x = 20;";
+        VariableValidator variableValidator = new VariableValidator();
+        BlockHandler blockHandler = new BlockHandler();
+        SymbolTable symbolTable = new SymbolTable(blockHandler);
+        try{
+            variableValidator.validateVariableDeclaration(declaration, symbolTable);
+            variableValidator.validateVariableAssignment("x", "20", symbolTable);
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean assignmentToNonFinalVariableTest(){
+        String declaration = "int y = 15;";
+        String assignment = "y = 25;";
+        VariableValidator variableValidator = new VariableValidator();
+        BlockHandler blockHandler = new BlockHandler();
+        SymbolTable symbolTable = new SymbolTable(blockHandler);
+        try{
+            variableValidator.validateVariableDeclaration(declaration, symbolTable);
+            variableValidator.validateVariableAssignment("y", "25", symbolTable);
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean assignmentFromExistingVariableTest(){
+        String declaration1 = "int a = 5;";
+        String declaration2 = "int b;";
+        String assignment = "b = a;";
+        VariableValidator variableValidator = new VariableValidator();
+        BlockHandler blockHandler = new BlockHandler();
+        SymbolTable symbolTable = new SymbolTable(blockHandler);
+        try{
+            variableValidator.validateVariableDeclaration(declaration1, symbolTable);
+            variableValidator.validateVariableDeclaration(declaration2, symbolTable);
+            variableValidator.validateVariableAssignment("b", "a", symbolTable);
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public static  boolean assignmentFromNonExistingVariableTest(){
+        String declaration = "int b;";
+        String assignment = "b = a;";
+        VariableValidator variableValidator = new VariableValidator();
+        BlockHandler blockHandler = new BlockHandler();
+        SymbolTable symbolTable = new SymbolTable(blockHandler);
+        try{
+            variableValidator.validateVariableDeclaration(declaration, symbolTable);
+            variableValidator.validateVariableAssignment("b", "a", symbolTable);
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean assignmentFromFinalVariableTest(){
+        String declaration1 = "final int a = 5;";
+        String declaration2 = "int b;";
+        String assignment = "b = a;";
+        VariableValidator variableValidator = new VariableValidator();
+        BlockHandler blockHandler = new BlockHandler();
+        SymbolTable symbolTable = new SymbolTable(blockHandler);
+        try {
+            variableValidator.validateVariableDeclaration(declaration1, symbolTable);
+            variableValidator.validateVariableDeclaration(declaration2, symbolTable);
+            variableValidator.validateVariableAssignment("b", "a", symbolTable);
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean assignmentTypeMismatchTest(){
+        String declaration = "int a = 5;";
+        String assignment = "a = true;";
+        VariableValidator variableValidator = new VariableValidator();
+        BlockHandler blockHandler = new BlockHandler();
+        SymbolTable symbolTable = new SymbolTable(blockHandler);
+        try{
+            variableValidator.validateVariableDeclaration(declaration, symbolTable);
+            variableValidator.validateVariableAssignment("a", "true", symbolTable);
         }
         catch (Exception e){
             System.err.println(e.getMessage());
