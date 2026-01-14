@@ -23,6 +23,13 @@ public class Sjavac {
         else{
             System.out.println("Symbol table tests failed.");
         }
+        boolean conditionValidatorTestsPassed = ConditionValidatorTests.passedBasicConditionValidatorTests();
+        if(conditionValidatorTestsPassed){
+            System.out.println("Condition validator tests passed.");
+        }
+        else{
+            System.out.println("Condition validator tests failed.");
+        }
         System.out.println("Sjavac main method executed.");
     }
 

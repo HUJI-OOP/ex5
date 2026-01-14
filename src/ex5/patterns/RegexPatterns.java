@@ -27,19 +27,20 @@ public final class RegexPatterns {
     public static final Pattern VARIABLE_NAME =
             Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*$|^_[a-zA-Z0-9][a-zA-Z0-9_]*$");
     public static final Pattern ASSIGNMENT_DELIMITER = Pattern.compile("\\s*=\\s*");
-
-    public static final Pattern INTEGER_TYPE = Pattern.compile("^int$");
-    public static final Pattern DOUBLE_TYPE = Pattern.compile("^double$");
-    public static final Pattern STRING_TYPE = Pattern.compile("^String$");
-    public static final Pattern BOOLEAN_TYPE = Pattern.compile("^boolean$");
-    public static final Pattern CHAR_TYPE = Pattern.compile("^char$");
-
     public static final Pattern INTEGER_LITERAL = Pattern.compile("^-?\\d+$");
     public static final Pattern DOUBLE_LITERAL = Pattern.compile
             ("^-?\\d+\\.\\d*$|^-?\\.\\d+$|^-?\\d+$");
     public static final Pattern STRING_LITERAL = Pattern.compile("^\".*\"$");
     public static final Pattern BOOLEAN_LITERAL = Pattern.compile("^(true|false)$");
     public static final Pattern CHAR_LITERAL = Pattern.compile("^'.'$");
+
+    //Condition patterns
+    public static final Pattern FULL_CONDITION_LINE_STRUCTURE =
+            Pattern.compile("^\\s*(if|while)\\s*\\((\\s*(.*?)\\s*)\\)\\s*\\{\\s*$");
+        public static final Pattern CONDITION_EXPRESSION =
+            Pattern.compile("^\\s*[^&|\\s]+(\\s*(\\|\\s*\\||&\\s*&)\\s*[^&|\\s]+)*\\s*$");
+    public static final Pattern BOOLEAN_VALUE_PATTERN =
+            Pattern.compile("^\\s*(true|false)\\s*$");
 
 
 
