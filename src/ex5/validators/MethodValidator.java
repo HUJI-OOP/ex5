@@ -6,6 +6,7 @@ import ex5.model.Variable;
 import ex5.model.VariableType;
 import ex5.parser.SyntaxException;
 import ex5.patterns.RegexPatterns;
+import ex5.validators.VariableValidator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,6 +26,8 @@ public class MethodValidator {
             = "Invalid number of arguments in call" +
             " to ";
     private static final String COMMA_SEPARATOR = ",";
+    private static final String ARRGUMENT_TYPE_MISMATCH_TO_DECLERATION_MEESAGE =
+            "Argument type mismatch for parameter: ";
 
 
     public static void validateAndRegister(String line, SymbolTable symbolTable) throws SyntaxException {
@@ -62,6 +65,7 @@ public class MethodValidator {
     }
 
     public static void validateMethodExists(String line, SymbolTable symbolTable) throws SyntaxException {
+        VariableValidator validator = new VariableValidator();
         Matcher matcher = RegexPatterns.METHOD_CALL.matcher(line);
         if (!matcher.matches()) {
             throw new InvalidMethodCallFormatException(INVALID_METHOD_CALL_FORMAT_MESSAGE);
@@ -85,7 +89,13 @@ public class MethodValidator {
         }
 
         for (int i = 0; i < args.size(); i++) {
-            // todo validate each argument vs parameter
+            String arg = args.get(i);
+            Variable param = method.getParameters().get(i);
+            // Additional type checking can be implemented here if needed
+            if (!validator.valueMatchType(arg, param.getType(), symbolTable)) {
+                throw new InvalidArgumentTypeMismatchMethodException(
+                        ARRGUMENT_TYPE_MISMATCH_TO_DECLERATION_MEESAGE + param.getName());
+            }
         }
     }
 }
