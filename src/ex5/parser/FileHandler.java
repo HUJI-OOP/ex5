@@ -124,8 +124,13 @@ public class FileHandler {
                                                    BlockHandler blockHandler,boolean isFirstPass)
                                                                                 throws SyntaxException {
         if(isFirstPass){
-            VariableValidator.validateVariableDeclaration(line, symbolTable);
+            if(blockHandler.isGlobalScope()){
+                VariableValidator.validateVariableDeclaration(line, symbolTable);
+            }
         } else {
+            if(!blockHandler.isGlobalScope()){
+                VariableValidator.validateVariableDeclaration(line, symbolTable);
+            }
             Scope scope = blockHandler.getCurrentScope();
             if (scope != null) {
                 blockHandler.getCurrentScope().markExecutableStatement();
