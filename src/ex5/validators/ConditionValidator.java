@@ -1,6 +1,8 @@
 package ex5.validators;
 
 import ex5.model.SymbolTable;
+import ex5.model.Variable;
+import ex5.model.VariableType;
 import ex5.parser.SyntaxException;
 import ex5.patterns.RegexPatterns;
 
@@ -13,6 +15,8 @@ public class ConditionValidator {
 
     private static final String CONDITION_DELIMITER_REGEX = "\\s*(\\|\\s*\\||&\\s*&)\\s*";
     private static final int CONDITION_STATEMENT_GROUP_INDEX = 2;
+    private static final String INVALID_CONDITION_FORMAT_MESSAGE = "Invalid condition format - ";
+    private static final String INVALID_CONDITION_PART_MESSAGE = "Invalid boolean condition - ";
 
     /**
      * Validates a condition line (if or while statement).
@@ -26,19 +30,19 @@ public class ConditionValidator {
                 String.valueOf(RegexPatterns.FULL_CONDITION_LINE_STRUCTURE));
         Matcher fullLineMatcher = fullConditionLinePattern.matcher(declaration);
         if(!fullLineMatcher.matches()){
-            throw new InvalidConditionFormatException(declaration);
+            throw new InvalidConditionFormatException(INVALID_CONDITION_FORMAT_MESSAGE + declaration);
         }//check structure inside the parentheses
         String conditionLine = fullLineMatcher.group(CONDITION_STATEMENT_GROUP_INDEX);
         Pattern conditionPattern = Pattern.compile(String.valueOf(RegexPatterns.CONDITION_EXPRESSION));
         Matcher matcher = conditionPattern.matcher(conditionLine);
         if(!matcher.matches()){
-            throw new InvalidConditionFormatException(declaration);
+            throw new InvalidConditionFormatException(INVALID_CONDITION_FORMAT_MESSAGE + declaration);
         }//check each condition part
         String[] conditionParts = conditionLine.split(CONDITION_DELIMITER_REGEX);
         for(String conditionPart : conditionParts){
             conditionPart = conditionPart.trim();
             if(!isValidConditionPart(conditionPart, symbolTable)){
-                throw new InvalidConditionFormatException(declaration);
+                throw new InvalidConditionFormatException(INVALID_CONDITION_PART_MESSAGE + conditionPart);
             }
         }
     }
@@ -56,8 +60,14 @@ public class ConditionValidator {
         if (validLiteralMatcher.matches()) {
             return true;
         }
-        if(symbolTable.getVariable(conditionPart) != null){
-            return true;
+        try{
+            Variable variable = symbolTable.getVariable(conditionPart);
+            if(!variable.isInitialized() || !VariableType.DOUBLE.canAccept(variable.getType())){
+                return false;
+            }
+        }
+        catch (SyntaxException e){
+            return false;
         };
         return false;
     }

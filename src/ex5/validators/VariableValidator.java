@@ -50,7 +50,7 @@ public class VariableValidator {
         String allVariables = declarationMatcher.group(VARIABLES_GROUP_INDEX);
         if (!isValidInitializationValue(allVariables, type, symbolTable, isFinal)) {
             throw new InvalidVariableDeclarationException(INVALID_DECLARATION_MESSAGE + declaration);
-        }//todo check if right hand variable is initialized in all relevant places
+        }
     }
 
     private static boolean isValidInitializationValue(String allVariables, VariableType type,
@@ -129,12 +129,15 @@ public class VariableValidator {
         } else if (RegexPatterns.CHAR_LITERAL.matcher(value).matches()) {
             return type.canAccept(VariableType.CHAR);
         }
-        VariableType rightHandVariableType;
+        Variable rightHandVariable;
         try{
-            rightHandVariableType = symbolTable.getVariable(value).getType();
+            rightHandVariable = symbolTable.getVariable(value);
+            if(!rightHandVariable.isInitialized()){
+                return false;
+            }
         } catch (Exception e) {
             return false;
         }
-        return type.canAccept(rightHandVariableType);
+        return type.canAccept(rightHandVariable.getType());
     }
 }
