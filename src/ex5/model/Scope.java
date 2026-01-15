@@ -82,8 +82,12 @@ public class Scope {
     }
 
     public void markExecutableStatement() {
-        if (sawReturn) {
-            statementAfterReturn = true;
+        Scope scope = this;
+        while (scope != null && !scope.isMethodScope) {
+            scope = scope.parentScope;
+        }
+        if (scope != null && scope.sawReturn) {
+            scope.statementAfterReturn = true;
         }
     }
 

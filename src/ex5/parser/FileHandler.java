@@ -1,5 +1,6 @@
 package ex5.parser;
 
+import ex5.model.Scope;
 import ex5.model.SymbolTable;
 import ex5.patterns.RegexPatterns;
 import ex5.validators.ConditionValidator;
@@ -32,6 +33,7 @@ public class FileHandler {
     private static final String INVALID_SCOPE_CLOSE_MESSAGE = "No open scope to close";
     private static final String LINE_NOT_CLASSIFIABLE_MESSAGE = "Line does not match any valid line pattern";
     private static final String SCOPE_NOT_CLOSED_MESSAGE = "Reached end of file without closing all scopes";
+    private static final int NUM_PASSES = 2;
 
     /**
      * Parses a file line by line, updating the symbol table and block handler accordingly.
@@ -43,7 +45,11 @@ public class FileHandler {
         BlockHandler blockHandler = new BlockHandler();
         SymbolTable symbolTable = new SymbolTable(blockHandler);
         boolean first_pass = true;
-        for(int i = 0; i <2; i++){
+        for(int i = 0; i <NUM_PASSES; i++){
+            blockHandler.reset();
+            if (!first_pass) {
+                blockHandler.enableReturnValidation();
+            }
             int lineNumber = 0;
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
@@ -77,9 +83,11 @@ public class FileHandler {
         LineType lineType = LineHandler.classifyLine(line);
         switch (lineType) {
             case METHOD_DECLARATION -> methodDeclarationHandler(line, symbolTable, blockHandler, isFirstPass);
-            case IF_WHILE_CONDITION -> conditionStatementHandler(line, symbolTable, blockHandler, isFirstPass);
-            case VARIABLE_DECLARATION -> variableDeclarationHandler(line, symbolTable, isFirstPass);
-            case ASSIGNMENT -> variableAssignmentHandler(line, symbolTable, isFirstPass);
+            case IF_WHILE_CONDITION -> conditionStatementHandler(line, symbolTable,
+                                                                            blockHandler, isFirstPass);
+            case VARIABLE_DECLARATION -> variableDeclarationHandler(line, symbolTable,
+                                                                            blockHandler, isFirstPass);
+            case ASSIGNMENT -> variableAssignmentHandler(line, symbolTable, blockHandler, isFirstPass);
             case METHOD_CALL -> methodCallHandler(line, symbolTable, blockHandler, isFirstPass);
             case RETURN -> returnHandler(blockHandler, isFirstPass);
             case SCOPE_CLOSE -> scopeCloseHandler(blockHandler, isFirstPass);
@@ -96,7 +104,7 @@ public class FileHandler {
             }
             MethodValidator.validateAndRegister(line, symbolTable);
         }
-        blockHandler.enterNewScope();
+        blockHandler.enterNewScope(true);
     }
 
     private static void conditionStatementHandler(String line, SymbolTable symbolTable,
@@ -107,21 +115,30 @@ public class FileHandler {
                 throw new InvalidScopeException(ILLEGAL_SCOPE_FOR_CONDITION_DECLARATION_MESSAGE);
             }
             ConditionValidator.validateConditionLine(line, symbolTable);
+            blockHandler.getCurrentScope().markExecutableStatement();
         }
         blockHandler.enterNewScope();
     }
 
-    private static void variableDeclarationHandler(String line, SymbolTable symbolTable, boolean isFirstPass)
+    private static void variableDeclarationHandler(String line, SymbolTable symbolTable,
+                                                   BlockHandler blockHandler,boolean isFirstPass)
                                                                                 throws SyntaxException {
         if(isFirstPass){
             VariableValidator.validateVariableDeclaration(line, symbolTable);
+        } else {
+            Scope scope = blockHandler.getCurrentScope();
+            if (scope != null) {
+                blockHandler.getCurrentScope().markExecutableStatement();
+            }
         }
     }
 
-    private static void variableAssignmentHandler(String line, SymbolTable symbolTable, boolean isFirstPass)
+    private static void variableAssignmentHandler(String line, SymbolTable symbolTable,
+                                                  BlockHandler blockHandler, boolean isFirstPass)
                                                                                 throws SyntaxException {
         if(!isFirstPass){
             VariableValidator.validateVariableAssignment(line, symbolTable);
+            blockHandler.getCurrentScope().markExecutableStatement();
         }
     }
 
@@ -132,6 +149,7 @@ public class FileHandler {
                 throw new InvalidScopeException(ILLEGAL_SCOPE_FOR_METHOD_CALL_MESSAGE);
             }
             MethodValidator.validateMethodExists(line, symbolTable);
+            blockHandler.getCurrentScope().markExecutableStatement();
         }
     }
     
@@ -141,6 +159,7 @@ public class FileHandler {
             if(blockHandler.isGlobalScope()){
                 throw new InvalidScopeException(INVALID_RETURN_MESSAGE);
             }
+            blockHandler.getCurrentScope().markReturn();
         }
     }
 

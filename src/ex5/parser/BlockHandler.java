@@ -11,6 +11,7 @@ public class BlockHandler {
     private static final String INVALID_SCOPE_EXIT_MESSAGE = "No scope to exit";
     private static final String INVALID_SCOPE_FOR_END_FILE_MESSAGE = "Unclosed scopes at end of file";
     private final Stack<Scope> scopeStack = new Stack<Scope>();
+    private boolean validateReturns = false;
 
     /** Enters a new scope by pushing a new Scope onto the stack.
      * The new scope's parent is the current top scope, or null if the stack is empty.
@@ -24,6 +25,10 @@ public class BlockHandler {
         }
         scopeStack.push(newScope);
     }
+    public void enterNewScope(boolean isMethodScope) {
+        Scope parent = scopeStack.isEmpty() ? null : scopeStack.peek();
+        scopeStack.push(new Scope(parent, isMethodScope));
+    }
 
     /** Exits the current scope by popping the top Scope from the stack.
      * @throws InvalidScopeException if there is no scope to exit (stack is empty).
@@ -34,7 +39,9 @@ public class BlockHandler {
         }
 
         Scope closing = scopeStack.pop();
-        closing.validateMethodEnd();
+        if (validateReturns) {
+            closing.validateMethodEnd();
+        }
     }
 
     /** Gets the current scope (top of the stack).
@@ -61,5 +68,13 @@ public class BlockHandler {
         if(!scopeStack.isEmpty()){
             throw new InvalidScopeException(INVALID_SCOPE_FOR_END_FILE_MESSAGE);
         }
+    }
+
+    public void reset(){
+        scopeStack.clear();
+    }
+
+    public void enableReturnValidation() {
+        validateReturns = true;
     }
 }
