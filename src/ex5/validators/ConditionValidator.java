@@ -62,8 +62,9 @@ public class ConditionValidator {
         }
         try{
             Variable variable = symbolTable.getVariable(conditionPart);
-            if(!variable.isInitialized() || !VariableType.DOUBLE.canAccept(variable.getType())){
-                return false;
+            if(variable.isInitialized() && (variable.getType() == VariableType.DOUBLE ||
+                    variable.getType() == VariableType.INT || variable.getType() == VariableType.BOOLEAN)){
+                return true;
             }
         }
         catch (SyntaxException e){

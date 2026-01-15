@@ -1,4 +1,4 @@
-package ex5.main;
+package ex5.Tests;
 
 import ex5.model.SymbolTable;
 import ex5.model.Variable;
