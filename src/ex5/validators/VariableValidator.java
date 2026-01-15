@@ -76,6 +76,9 @@ public class VariableValidator {
                 return false;
             }
             Variable newVariable = new Variable(type, variableName, isFinal);
+            if(varParts.length == MAX_DECLARATION_PARTS){
+                newVariable.assignVal();
+            }
             symbolTable.addVariable(newVariable);
         }
         return true;
