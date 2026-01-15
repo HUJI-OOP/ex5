@@ -1,0 +1,14 @@
+void foo(int x){
+        x = 10;
+    }
+void main(){
+    int a = 3;
+    int b = 1;
+    if (b) {
+        a = 1;
+    }
+    while(b){
+        foo(a);
+        b = 2;
+    }
+}
