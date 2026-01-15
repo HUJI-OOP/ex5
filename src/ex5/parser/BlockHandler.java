@@ -28,13 +28,13 @@ public class BlockHandler {
     /** Exits the current scope by popping the top Scope from the stack.
      * @throws InvalidScopeException if there is no scope to exit (stack is empty).
      */
-    public void exitScope() throws InvalidScopeException{
-        if (!scopeStack.isEmpty()) {
-            scopeStack.pop();
+    public void exitScope() throws SyntaxException {
+        if (scopeStack.isEmpty()) {
+            throw new InvalidScopeException("No scope to exit");
         }
-        else {
-            throw new InvalidScopeException(INVALID_SCOPE_EXIT_MESSAGE);
-        }
+
+        Scope closing = scopeStack.pop();
+        closing.validateMethodEnd();
     }
 
     /** Gets the current scope (top of the stack).

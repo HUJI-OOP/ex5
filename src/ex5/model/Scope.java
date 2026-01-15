@@ -1,6 +1,7 @@
 package ex5.model;
 
 import ex5.model.IllegalDuplicateException;
+import ex5.parser.SyntaxException;
 
 import java.util.HashMap;
 
@@ -11,10 +12,29 @@ import java.util.HashMap;
 public class Scope {
     private static final String LOCAL_DUPLICATE_VARIABLE_MESSAGE = "Local variable with the same name: " +
             "already exists in this scope.";
+    private static final String METHOD_END_WITH_RETURN_MESSAGE = "Method must end with return";
     private final Scope parentScope;
     private final HashMap<String, Variable> localVariables;
+    private boolean isMethodScope;
+    private boolean sawReturn = false;
+    private boolean statementAfterReturn = false;
+
+    /**
+     * constructor for Scope
+     * @param parentScope
+     */
     public Scope(Scope parentScope) {
         this.parentScope = parentScope;
+        this.localVariables = new HashMap<>();
+    }
+    /**
+     * constructor for Method scope
+     * @param parentScope
+     * @param isMethodScope
+     */
+    public Scope(Scope parentScope, boolean isMethodScope) {
+        this.parentScope = parentScope;
+        this.isMethodScope = isMethodScope;
         this.localVariables = new HashMap<>();
     }
 
@@ -55,4 +75,26 @@ public class Scope {
     public Scope getParentScope() {
         return parentScope;
     }
+
+
+    public void markReturn() {
+        sawReturn = true;
+    }
+
+    public void markExecutableStatement() {
+        if (sawReturn) {
+            statementAfterReturn = true;
+        }
+    }
+
+    public void validateMethodEnd() throws SyntaxException {
+        if (isMethodScope && (!sawReturn || statementAfterReturn)) {
+            throw new IllegalFinishOfFunctionException(METHOD_END_WITH_RETURN_MESSAGE);
+        }
+    }
+
+    public boolean isMethodScope() {
+        return isMethodScope;
+    }
+    
 }
