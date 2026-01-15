@@ -72,8 +72,9 @@ public class MethodValidator {
                     throw new InvalidDuplicatesVaribleNamesException(
                             INVALID_DUPLICATES_VARIABLE_NANES_IN_METHOD_MESAGE + name);
                 }
-
-                parameters.add(new Variable(VariableType.convertFromString(type), name, isFinal));
+                Variable arg = new Variable(VariableType.convertFromString(type), name, isFinal);
+                parameters.add(arg);
+                symbolTable.addVariable(arg);
             }
         }
 
